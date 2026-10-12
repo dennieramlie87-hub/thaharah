@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Mario Bros: Thaharah Quest</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1c23;
+            color: #fff;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(239, 68, 68, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+        .pixel-font {
+            font-family: 'Press Start 2P', cursive;
+        }
+        .retro-box {
+            background: #2b2d42;
+            border: 4px solid #8d99ae;
+            box-shadow: 0 8px 0 #111;
+        }
+        .retro-button {
+            transition: all 0.1s ease;
+            box-shadow: 0 4px 0 #111;
+        }
+        .retro-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #111;
+        }
+        .retro-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #111;
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-slow {
+            animation: bounceSlow 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-4 sm:p-6">
+
+    <header class="w-full max-w-4xl mx-auto text-center py-4 mb-4">
+        <div class="inline-block bg-red-600 text-yellow-300 px-4 py-2 rounded-lg border-2 border-yellow-300 pixel-font text-xs sm:text-sm mb-3 shadow-lg uppercase tracking-wider animate-bounce-slow">
+            🍄 Mushroom Kingdom Academy 🍄
+        </div>
+        <h1 class="text-2xl sm:text-4xl font-black pixel-font text-yellow-400 drop-shadow-[0_4px_#000]">
+            SUPER MARIO BROS: THAHARAH QUEST
+        </h1>
+        <p class="text-gray-300 text-xs sm:text-sm mt-2 font-semibold">
+            Master Islamic Purification & Save the Kingdom with Mario & Friends!
+        </p>
+    </header>
+
+    <main class="w-full max-w-3xl mx-auto flex-grow flex items-center justify-center">
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="retro-box rounded-2xl p-6 sm:p-8 w-full text-center space-y-6">
+            <div class="flex justify-center space-x-6 text-4xl sm:text-5xl text-yellow-400">
+                <i class="fa-solid fa-hat-cowboy animate-bounce"></i>
+                <i class="fa-solid fa-star text-yellow-300"></i>
+                <i class="fa-solid fa-shield-halved text-blue-400"></i>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-bold text-yellow-300 pixel-font leading-relaxed">
+                Ready for the Grand Islamic Quiz Adventure?
+            </h2>
+            <p class="text-gray-300 text-sm leading-relaxed max-w-xl mx-auto">
+                Answer 20 exciting multiple-choice questions about Thaharah (Purification), Wudu, Ghusl, Tayammum, and Impurities. Earn 5 points per correct question to reach a legendary 100-point total!
+            </p>
+            <div class="pt-4">
+                <button onclick="startQuiz()" class="retro-button bg-green-600 hover:bg-green-500 text-white pixel-font px-8 py-4 rounded-xl text-sm sm:text-base border-2 border-green-400 flex items-center justify-center mx-auto space-x-3">
+                    <i class="fa-solid fa-play"></i>
+                    <span>START QUEST!</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden retro-box rounded-2xl p-6 sm:p-8 w-full space-y-6">
+            <!-- Stats Bar -->
+            <div class="flex justify-between items-center bg-gray-900 p-4 rounded-xl border-2 border-gray-700 text-xs sm:text-sm font-bold">
+                <div class="flex items-center space-x-2 text-yellow-400">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span id="question-counter">Question 1/20</span>
+                </div>
+                <div class="flex items-center space-x-2 text-green-400">
+                    <i class="fa-solid fa-coins"></i>
+                    <span id="score-display">Score: 0 pts</span>
+                </div>
+            </div>
+
+            <!-- Question Box -->
+            <div class="space-y-4">
+                <div id="character-tag" class="text-xs uppercase font-bold text-red-400 tracking-wider pixel-font">
+                    Mario's Challenge
+                </div>
+                <h3 id="question-text" class="text-base sm:text-lg font-bold text-white leading-relaxed">
+                    Loading question...
+                </h3>
+            </div>
+
+            <!-- Options Container -->
+            <div id="options-container" class="space-y-3">
+                <!-- Dynamic Options inserted via JS -->
+            </div>
+
+            <!-- Next Button -->
+            <div class="flex justify-end pt-4">
+                <button id="next-btn" onclick="nextQuestion()" class="hidden retro-button bg-blue-600 hover:bg-blue-500 text-white pixel-font px-6 py-3 rounded-xl text-xs sm:text-sm border-2 border-blue-400 flex items-center space-x-2">
+                    <span>NEXT STAGE</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden retro-box rounded-2xl p-6 sm:p-8 w-full text-center space-y-6">
+            <div class="text-5xl text-yellow-400 animate-bounce">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-yellow-300 pixel-font">
+                QUEST COMPLETED!
+            </h2>
+            <div class="bg-gray-900 p-6 rounded-xl border-2 border-gray-700 max-w-md mx-auto space-y-3">
+                <p class="text-gray-300 text-sm">Final Score:</p>
+                <div id="final-score" class="text-3xl sm:text-4xl font-black text-green-400 pixel-font">
+                    100 / 100
+                </div>
+                <p id="final-message" class="text-xs sm:text-sm text-yellow-200 font-semibold pt-2">
+                    Incredible! You are a Thaharah Master of the Mushroom Kingdom!
+                </p>
+            </div>
+            <div class="flex justify-center space-x-4 pt-4">
+                <button onclick="restartQuiz()" class="retro-button bg-yellow-500 hover:bg-yellow-400 text-gray-900 pixel-font px-6 py-3 rounded-xl text-xs sm:text-sm font-bold border-2 border-yellow-300 flex items-center space-x-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>PLAY AGAIN</span>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="w-full max-w-4xl mx-auto text-center text-xs text-gray-500 py-4">
+        Super Mario Bros: Thaharah Quest &copy; 2026 | Grade 7 Islamic Studies
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                character: "🍄 Mushroom Kingdom Explorer Mario",
+                question: "Mushroom Kingdom Explorer Mario wants to perform Salah, but first he needs purification. What is the Islamic term for purification that removes physical impurities and achieves ritual purity?",
+                options: [
+                    "A) Thaharah",
+                    "B) Sadaqah",
+                    "C) Zakat"
+                ],
+                correct: 0
+            },
+            {
+                character: "⭐ Princess Peach",
+                question: "Which Surah and Ayah in the Qur'an mentions that Allah loves those who constantly repent and purify themselves?",
+                options: [
+                    "A) Surah Al-Baqarah 2:222",
+                    "B) Surah Al-Ma'idah 5:6",
+                    "C) Surah At-Tawbah 9:108"
+                ],
+                correct: 0
+            },
+            {
+                character: "🐢 Bowser",
+                question: "Bowser tries to block Mario's path with physical dirt. What is the Arabic term for physical impurity that must be physically removed?",
+                options: [
+                    "A) Hadath",
+                    "B) Najis",
+                    "C) Wudu"
+                ],
+                correct: 1
+            },
+            {
+                character: "🟢 Luigi",
+                question: "Luigi finds a baby boy's urine who only drinks breastmilk. Which category of light physical impurity (Mukhaffafah) does this fall under, and how is it cleaned?",
+                options: [
+                    "A) Wash 7 times with soil",
+                    "B) Simply sprinkle water over the affected area.",
+                    "C) Scrub with soap and sponge"
+                ],
+                correct: 1
+            },
+            {
+                character: "🍑 Princess Peach",
+                question: "Princess Peach encounters common impurities like general urine, feces, or blood (Mutawassitah). How must she clean them?",
+                options: [
+                    "A) Wash with water until color, smell, and taste are completely gone.",
+                    "B) Just wipe with a dry cloth",
+                    "C) Sprinkle rose water"
+                ],
+                correct: 0
+            },
+            {
+                character: "🦖 Yoshi",
+                question: "Yoshi stumbles upon heavy impurity (Mughallazah) involving a dog or a pig according toَّةthe Shafi'i school. What is the required cleaning procedure?",
+                options: [
+                    "A) Wash once with soap",
+                    "B) Wash 7 times in total, with one wash mixed with clean earth or soil.",
+                    "C) Boil in hot water"
+                ],
+                correct: 1
+            },
+            {
+                character: "🍄 Toad",
+                question: "Toad is learning about invisible ritual impurities. What is the term for ritual impurity like passing wind or urine that affects worship?",
+                options: [
+                    "A) Najis",
+                    "B) Hadath",
+                    "C) Junub"
+                ],
+                correct: 1
+            },
+            {
+                character: "🍄 Mario",
+                question: "Mario experiences Hadath Asghar (minor ritual impurity) due to passing wind. What action must he perform to restore his purity?",
+                options: [
+                    "A) Perform Wudu",
+                    "B) Take a full bath (Ghusl)",
+                    "C) Perform Tayammum only"
+                ],
+                correct: 0
+            },
+            {
+                character: "⭐ Luigi",
+                question: "What are the causes of Hadath Akbar (major ritual impurity) that require a full ritual bath?",
+                options: [
+                    "A) Sleeping deeply",
+                    "B) Janabah, end of menstruation, and end of postnatal bleeding",
+                    "C) Eating heavy mushrooms"
+                ],
+                correct: 1
+            },
+            {
+                character: "🐢 Bowser Jr.",
+                question: "According to the Shafi'i school, which of the following events will definitely break Mario's Wudu?",
+                options: [
+                    "A) Loss of consciousness, such as fainting or falling into a deep sleep",
+                    "B) Drinking fresh milk",
+                    "C) Running fast in a platform level"
+                ],
+                correct: 0
+            },
+            {
+                character: "🍄 Toadette",
+                question: "Which physical contact breaks Wudu according to the Shafi'i school?",
+                options: [
+                    "A) Direct skin contact between an adult man and woman who are not mahram",
+                    "B) High-fiving your teammate",
+                    "C) Hugging your sibling"
+                ],
+                correct: 0
+            },
+            {
+                character: "⭐ Mario",
+                question: "What is the very first step in performing Wudu?",
+                options: [
+                    "A) Washing the face",
+                    "B) Niyyah (Intention) and saying Bismillah",
+                    "C) Washing the feet"
+                ],
+                correct: 1
+            },
+            {
+                character: "🍄 Luigi",
+                question: "When washing arms during Wudu, up to which body part must you wash, and which arm should you start with?",
+                options: [
+                    "A) Up to the wrists, left arm first",
+                    "B) Up to the elbows, right arm first",
+                    "C) Up to the shoulders, both arms together"
+                ],
+                correct: 1
+            },
+            {
+                character: "🍑 Princess Peach",
+                question: "How many main steps/actions are involved in Ghusl (The Full Ritual Bath) to ensure complete purification?",
+                options: [
+                    "A) 3 steps",
+                    "B) 5 steps",
+                    "C) 10 steps"
+                ],
+                correct: 1
+            },
+            {
+                character: "🦖 Yoshi",
+                question: "When is Tayammum (Dry Purification) legally permitted in Islam?",
+                options: [
+                    "A) Only when water cannot be found, or when using water would cause severe harm or sickness",
+                    "B) Whenever you feel too lazy to use cold water",
+                    "C) Whenever you are in a video game castle"
+                ],
+                correct: 0
+            },
+            {
+                character: "🍄 Toad",
+                question: "What are the correct steps for performing Tayammum?",
+                options: [
+                    "A) 1. Intention, 2. Tap clean earth or dust, 3. Wipe the face, 4. Wipe the hands",
+                    "B) 1. Wash face, 2. Wash hands, 3. Wipe head",
+                    "C) 1. Drink water, 2. Sleep"
+                ],
+                correct: 0
+            },
+            {
+                character: "⭐ Mario",
+                question: "Which of the following is an excellent daily habit of Thaharah mentioned for our daily lives?",
+                options: [
+                    "A) Keeping school uniforms neat, clean, and smelling fresh",
+                    "B) Leaving muddy boots on the carpet",
+                    "C) Forgetting to brush teeth"
+                ],
+                correct: 0
+            },
+            {
+                character: "🍄 Luigi",
+                question: "What does the golden rule of Thaharah tell us to do?",
+                options: [
+                    "A) Keep your body clean, your clothes pure, and your environment healthy.",
+                    "B) Collect as many gold coins as possible",
+                    "C) Avoid washing clothes on rainy days"
+                ],
+                correct: 0
+            },
+            {
+                character: "🍑 Princess Peach",
+                question: "Why is proper order (Tartib) important when performing Wudu?",
+                options: [
+                    "A) Because performing all steps in their proper sequence is required for a valid Wudu",
+                    "B) It makes the ritual look faster",
+                    "C) It is just a tradition with no legal rule"
+                ],
+                correct: 0
+            },
+            {
+                character: "🍄 Mario",
+                question: "What wonderful character trait does practicing regular Thaharah build in students like Grade 7 learners?",
+                options: [
+                    "A) Strong daily discipline, responsibility, and lifelong healthy habits",
+                    "B) Ability to jump higher over obstacles",
+                    "C) Speedrunning skills"
+                ],
+                correct: 0
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedOption = null;
+        let isAnswered = false;
+
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        
+        const questionCounter = document.getElementById('question-counter');
+        const scoreDisplay = document.getElementById('score-display');
+        const characterTag = document.getElementById('character-tag');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+
+        const finalScore = document.getElementById('final-score');
+        const finalMessage = document.getElementById('final-message');
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            welcomeScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswered = false;
+            selectedOption = null;
+            nextBtn.classList.add('hidden');
+
+            const q = questions[currentQuestionIndex];
+            questionCounter.textContent = `Question ${currentQuestionIndex + 1}/20`;
+            scoreDisplay.textContent = `Score: ${score} pts`;
+            characterTag.textContent = q.character;
+            questionText.textContent = q.question;
+
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-xl bg-gray-800 hover:bg-gray-700 border-2 border-gray-600 transition-all font-semibold text-sm sm:text-base flex items-center justify-between group';
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-gray-500 group-hover:text-yellow-400"></i>`;
+                btn.onclick = () => selectOption(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(idx, btnElement) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const q = questions[currentQuestionIndex];
+            const buttons = optionsContainer.children;
+
+            if (idx === q.correct) {
+                btnElement.classList.remove('bg-gray-800', 'border-gray-600');
+                btnElement.classList.add('bg-green-900', 'border-green-500', 'text-green-200');
+                btnElement.querySelector('i').className = 'fa-solid fa-circle-check text-green-400';
+                score += 5;
+            } else {
+                btnElement.classList.remove('bg-gray-800', 'border-gray-600');
+                btnElement.classList.add('bg-red-900', 'border-red-500', 'text-red-200');
+                btnElement.querySelector('i').className = 'fa-solid fa-circle-xmark text-red-400';
+
+                // Highlight correct
+                const correctBtn = buttons[q.correct];
+                correctBtn.classList.remove('bg-gray-800', 'border-gray-600');
+                correctBtn.classList.add('bg-green-900', 'border-green-500', 'text-green-200');
+                correctBtn.querySelector('i').className = 'fa-solid fa-circle-check text-green-400';
+            }
+
+            scoreDisplay.textContent = `Score: ${score} pts`;
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            finalScore.textContent = `${score} / 100`;
+
+            if (score === 100) {
+                finalMessage.textContent = "⭐ Legendary! You achieved a perfect 100 points! You are a true Thaharah Master!";
+            } else if (score >= 80) {
+                finalMessage.textContent = "🌟 Fantastic job! Mario and Peach are very proud of your Islamic knowledge!";
+            } else if (score >= 50) {
+                finalMessage.textContent = "👍 Good effort! Review the lessons and try again to hit 100 points!";
+            } else {
+                finalMessage.textContent = "🍄 Keep practicing! Study the purification rules and try the quest again!";
+            }
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+    </script>
+</body>
+</html>
